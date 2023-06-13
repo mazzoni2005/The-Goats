@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUIZ - THE GOATS</title>
+    <link rel="stylesheet" href="./css/quiz.css">
+</head>
+<body>
+    <a href="./index.html" class="AAA"><button class="btn_voltar">Voltar</button></a>
+    <div class="app">
+        <h1>Quiz - The Goats</h1>
+        <div class="quiz">
+            <h2 id="questao">A pergunta vai aqui</h2>
+            <div id="respostas-buttons">
+                <div class="btns">
+                    <button class="btn">resposta 1</button>
+                    <button class="btn">resposta 2</button>
+                    <button class="btn">resposta 3</button>
+                    <button class="btn">resposta 4</button>
+                </div>
+            </div>
+            <button id="next-btn">Voltar para a Página Inicial</button>
+        </div>
+    <div class="ranking">
+    </div>
+    </div>
+
+        <!-- <script src="quizJd1.js"></script> -->
+</body>
+</html>
+<script>
+    const questao = [
+    {
+        questao: "Quantos títulos da NBA Michael Jordan possui?",
+        respostas: [
+            { text: "4", correct: false},
+            { text: "6", correct: true},
+            { text: "5", correct: false},
+            { text: "3", correct: false}
+        ]
+    },
+    {
+        questao: "Quantos prêmios de MVP LeBron James possui?",
+        respostas: [
+            { text: "6", correct: false},
+            { text: "3", correct: false},
+            { text: "4", correct: true},
+            { text: "5", correct: false}
+        ] 
+    },
+    {
+        questao: "Quais dessas camisas Michael Jordan já jogou na carreira?",
+        respostas: [
+            { text: "23 e 6", correct: false},
+            { text: "2 e 23", correct: false},
+            { text: "23 e 45", correct: true},
+            { text: "6 e 45", correct: false}
+        ] 
+    },
+    {
+        questao: "Em 2022, LeBron James bateu o recorde de pontos da história da NBA. Quem detinha o posto de maior pontuador antes de LeBron?",
+        respostas: [
+            { text: "Michael Jordan", correct: false},
+            { text: "Bill Russell", correct: false},
+            { text: "Kobe Bryant", correct: false},
+            { text: "Kareen Abdul-Jabbar", correct: true}
+        ] 
+    },
+    {
+        questao: "Por quais franquias MJ já jogou?",
+        respostas: [
+            { text: "Chicago Bulls e Miami Heat", correct: false},
+            { text: "Miami Heat e Detroit Pistons", correct: false},
+            { text: "Chicago Bulls e Detroit Pistons", correct: false},
+            { text: "Chicago Bulls e Washington Wizards", correct: true}
+        ] 
+    },
+    {
+        questao: "Quais dessas camisas LBJ já jogou?",
+        respostas: [
+        { text: "6 e 23", correct: true},
+        { text: "6 e 24", correct: false},
+        { text: "2 e 6", correct: false},
+        { text: "2 e 23", correct: false}
+        ]       
+    },
+    {
+        questao: "Quais franquias James já defendeu?",
+        respostas: [
+            { text: "Cleveland Cavaliers e Los Angeles Lakers", correct: false},
+            { text: "Cleveland Cavaliers, Miami Heat e Los Angeles Lakers", correct: true},
+            { text: "Chicago Bulls e Los Angeles Lakers", correct: false},
+            { text: "Miami Heat e Los Angeles Lakers", correct: false}
+        ]
+    },
+    {
+        questao: "Quantos prêmios de MVP Michael Jordan já conquistou?",
+        respostas: [
+            { text: "4", correct: false},
+            { text: "6", correct: true},
+            { text: "5", correct: false},
+            { text: "3", correct: false}
+        ]
+    },
+    {
+        questao: "Qual dos dois jogadores já foi campeão por mais de uma franquia?",
+        respostas: [
+            { text: "LeBron James", correct: true},
+            { text: "Michael Jordan", correct: false}
+        ]
+    },
+    {
+        questao: "Quantos anéis da NBA LeBron James conquistou ao longo de sua carreira?",
+        respostas: [
+            { text: "4", correct: true},
+            { text: "2", correct: false},
+            { text: "5", correct: false},
+            { text: "3", correct: false}
+        ]
+    }
+];
+
+
+const questaoElement = document.getElementById("questao");
+const respostasButtons = document.getElementById("respostas-buttons");
+const nextButton = document.getElementById("next-btn");
+
+let currentQuestaoIndex = 0;
+var score = 0;
+
+function startQuiz(){
+    currentQuestaoIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Próxima";
+    showQuestao();
+}
+
+function showQuestao(){
+    resetState();
+    let currentQuestao = questao[currentQuestaoIndex];
+    let questaoNo = currentQuestaoIndex + 1;
+    questaoElement.innerHTML = questaoNo + ". " + currentQuestao.questao;
+
+    currentQuestao.respostas.forEach(respostas => {
+        const button = document.createElement("button");
+        button.innerHTML = respostas.text;
+        button.classList.add("btn");
+        respostasButtons.appendChild(button);
+        if(respostas.correct){
+            button.dataset.correct = respostas.correct;
+        }
+        button.addEventListener("click", selectrespostas);
+    })
+}
+
+function resetState(){
+    nextButton.style.display = "none";
+    while(respostasButtons.firstChild){
+        respostasButtons.removeChild(respostasButtons.firstChild)
+    }
+}
+
+function selectrespostas(e){
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if(isCorrect){
+        selectedBtn.classList.add("correct");
+        score++;
+    }else{
+        selectedBtn.classList.add("incorrect");
+    }
+    Array.from(respostasButtons.children).forEach(button => {
+        if(button.dataset.correct === "true"){
+            button.classList.add("correct");
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display = "block";
+}
+
+function showScore(){
+    resetState();
+    questaoElement.innerHTML = `Você acertou ${score} de ${questao.length}!<br>`;
+    if(score <= 5){
+        questaoElement.innerHTML += `Tá fraquinho(a) em... Vamo assistir mais um pouco de NBA?`; 
+    } else if(score <= 7){
+        questaoElement.innerHTML += `Você sabe das coisas!`;
+    } else if(score <= 10){
+        questaoElement.innerHTML += `Que isso, coisa linda! Sabe tudo de NBA`;
+    }
+    nextButton.style.display = "block";
+}
+
+function handleNextButton(){
+    currentQuestaoIndex++;
+    if(currentQuestaoIndex < questao.length){
+        showQuestao();
+    }else{
+        showScore();
+    }
+}
+
+
+nextButton.addEventListener("click", ()=>{
+    var idUsuario = sessionStorage.ID_USUARIO;
+    
+    console.log(score)
+
+    if(currentQuestaoIndex < questao.length){
+        handleNextButton();
+    }else{
+        if (idUsuario == undefined || score == undefined) {
+            console.log("erro ao enviar dados");
+          } else {
+            fetch("/usuarios/quiz1", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                idUsuarioServer: idUsuario,
+                pontuacaoServer: score,
+              }),
+            })
+              .then(function (resposta) {
+                console.log("ESTOU NO THEN DO entrar()!");
+      
+                if (resposta.ok) {
+                  console.log(resposta);
+                  setTimeout(function () {
+                    location.href = "../QuizJD4/quizJd4.html";
+                  }, 2500);
+                } else {
+                  console.log('erro ao enviar dados para o banco')
+                  resposta.text().then((texto) => {
+                    console.error(texto);
+                  });
+                }
+              })
+              .catch(function (erro) {
+                console.log(erro);
+              });
+      
+            return false;
+          }
+    }
+});
+
+startQuiz();
+</script>

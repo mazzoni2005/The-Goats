@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login Page</title>
+
+    <script src="./js/funcoes.js"></script>
+
+    <link rel="icon" href="./assets/icon/favicon2.ico">
+    <link rel="stylesheet" href="./css/CSSlogin.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!--Header-->
+
+    <header>
+        <nav>
+            <a href="index.html"> <img src="./assets/logo2.png" id="logo"></a>
+            <ul class="nav-list">
+                <li> <a href="lbj.html"><b> LeBron James </b></a></li>
+                <li> <a href="./mj.html"><b> Michael Jordan </b></a></li>
+                <li> <a href="./quiz.html"><b> Quiz </b></a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <div class="login">
+        <div class="alerta_erro">
+            <div class="card_erro" id="cardErro">
+                <span id="mensagem_erro"></span>
+            </div>
+        </div>
+        <div class="main">
+            <div class="card">
+                <div class="tittleLogar">
+                    <b>Seja bem-vindo!</b>
+                </div>
+                <div class="grupo-inputs">
+                    <div>
+                        <label><b>Email:</b></label>
+                        <input id="email_input" type="text" placeholder="Login">
+                    </div>
+                    <div>
+                        <label><b>Senha:</b></label>
+                        <input id="senha_input" type="text" placeholder="******">
+                    </div>
+                    <div class="coluna">
+                        <button class="btnLogin" onclick="logar()">Entrar</button>  
+                    </div> 
+                    
+                </div>
+                <a href="cadastro.html" class="voltarPI"> Ainda não tem uma conta? Cadastre-se </a>
+             
+
+                <div id="div_erros_login"></div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+<script>
+
+
+    function logar() {
+        //aguardar();
+
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+
+        if (emailVar == "" || senhaVar == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            if (emailVar == '' || senhaVar == '') {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Erro',
+                text: 'Algum campo foi preenchido incorretamente!',
+                showConfirmButton: true,
+            })
+            return false
+            //finalizarAguardar();
+        }}
+        else {
+            setInterval(sumirMensagem, 5000)
+        }
+
+        console.log("FORM LOGIN: ", emailVar);
+        console.log("FORM SENHA: ", senhaVar);
+
+        fetch("/usuarios/autenticar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_USUARIO = json.id;
+                    setTimeout(function () {
+                        window.location = "quiz.html";
+                    }, 1000); // apenas para exibir o loading
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+        
+
+        }}).catch(function (erro) {
+            console.log(erro);
+        })
+
+        return false;
+     }
+
+    function sumirMensagem() {
+        cardErro.style.display = "none"
+    }
+
+</script>
